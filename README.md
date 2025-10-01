@@ -7,7 +7,7 @@
 
 ## 📦 1. 本地准备代码与依赖
 
-1. 确保你的 Python 项目结构如下：
+### 1. 确保你的 Python 项目结构如下：
 
 
 
@@ -29,19 +29,19 @@
 
 ## 🛠️ 2. 构建并测试 Docker 镜像
 
-1. 在项目目录执行构建：
+### 1. 在项目目录执行构建：
 
 ```bash
 docker build -t py-infer:latest .
 ```
 
-2. 启动容器并映射端口：
+### 2. 启动容器并映射端口：
 
 ```bash
 docker run --rm -p 8000:8000 py-infer:latest
 ```
 
-3. 测试推理接口：
+### 3. 测试推理接口：
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/infer" \
@@ -51,17 +51,12 @@ curl -X POST "http://127.0.0.1:8000/infer" \
 
 或者：
 
-打开浏览器：http://127.0.0.1:8000/docs
-
-发送 POST 请求
-
-正常得到返回即成功。
-
+- 打开浏览器：http://127.0.0.1:8000/docs → 发送 POST 请求 → 正常得到返回即成功
 ---
 
 ## ☁️ 3. 推送镜像到 Docker Hub
 
-1. 登录 Docker Hub：
+### 1. 登录 Docker Hub：
 
 - 登录 Docker Hub 网站
 
@@ -80,46 +75,46 @@ docker login
 
 - Password: 刚生成的 Access Token
 
-2. 给镜像打标签：
+### 2. 给镜像打标签：
 
 ```bash
 docker tag py-infer:latest your_dockerhub_username/py-infer:latest
 ```
 
-3. 推送镜像：
+### 3. 推送镜像：
 
 ```bash
 docker push your_dockerhub_username/py-infer:latest
 ```
 
-4. 在 Docker Hub 仓库中可以看到镜像。
+### 4. 在 Docker Hub 仓库中可以看到镜像。
 
 ---
 
 ## 🚀 4. 部署到 Sealos 集群
-1. 检查本机是否装了 kubectl
+### 1. 检查本机是否装了 kubectl
 
 ```bash
 kubectl version --client
 ```
 
-2. 从 Sealos 控制台下载kubeconfig.yaml
+### 2. 从 Sealos 控制台下载kubeconfig.yaml
  
-3. 设置环境变量，在 PowerShell 执行：
+### 3. 设置环境变量，在 PowerShell 执行：
 ```bash
 $env:KUBECONFIG = "C:\kube\kubeconfig.yaml"（改为你的路径）
 ```
-4. 查看当前命名空间
+### 4. 查看当前命名空间
 ```bash
 kubectl config view --minify -o "jsonpath={..namespace}"
 ```
-5. 查询是否能访问该命名空间
+### 5. 查询是否能访问该命名空间
 ```bash
 kubectl get pods -n user-system（user-system为之前上一步查询到的名字）
 ```
 - 能显示结果（哪怕是空列表而不是 Forbidden），说明你在 user-system 有权限
 
-6. 编写 Kubernetes 部署文件
+### 6. 编写 Kubernetes 部署文件
 
 - 在本地新建 `py-infer.yaml`：
 
@@ -192,7 +187,7 @@ spec:
   type: ClusterIP
 ```
 
-7. 应用配置
+### 7. 应用配置
 
 ```bash
 kubectl apply -f py-infer.yaml
