@@ -1,4 +1,4 @@
-```markdown
+
 # Python 推理服务部署到 Sealos 全流程
 
 本文档介绍如何从零开始，将本地的 Python 推理服务（FastAPI + PyTorch）打包成 Docker 镜像，并部署到 Sealos 集群中，通过 Service 供前端调用。
@@ -9,76 +9,24 @@
 
 1. 确保你的 Python 项目结构如下：
 
-```
+
 
 app/
+
 │── app.py                 # FastAPI 推理服务入口
+
 │── requirements.txt       # 依赖文件
+
 │── nets/                  # 模型代码
+
 │── util/                  # 工具代码
+
 │── checkpoint/            # 模型权重文件
+
 │── Dockerfile             # 镜像构建文件
 
-```
 
-2. `requirements.txt` 只保留项目需要的依赖，例如：
-
-```
-
-fastapi
-uvicorn
-torch==2.3.0
-torchvision==0.18.0
-pillow
-opencv-python
-numpy
-tqdm
-einops
-torchsummary
-
-````
-
----
-
-## 🐳 2. 编写 Dockerfile
-
-在项目目录 `app/` 下新建 `Dockerfile`：
-
-```dockerfile
-# 选择 Python 基础镜像
-FROM python:3.10-slim
-
-# 避免生成 pyc 文件，加快容器启动
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
-
-# 安装必要的系统依赖
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    git \
-    ffmpeg \
-    libsm6 \
-    libxext6 \
-    libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
-
-# 设置工作目录
-WORKDIR /app
-
-# 先拷贝 requirements 并安装依赖
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-
-# 拷贝代码
-COPY . /app/
-
-# 启动命令
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
-````
-
----
-
-## 🛠️ 3. 构建并测试 Docker 镜像
+## 🛠️ 2. 构建并测试 Docker 镜像
 
 1. 在项目目录执行构建：
 
@@ -103,7 +51,7 @@ curl -X POST "http://127.0.0.1:8000/infer" \
 
 ---
 
-## ☁️ 4. 推送镜像到 Docker Hub
+## ☁️ 3. 推送镜像到 Docker Hub
 
 1. 登录 Docker Hub：
 
@@ -127,9 +75,9 @@ docker push your_dockerhub_username/py-infer:v1
 
 ---
 
-## 🚀 5. 部署到 Sealos 集群
+## 🚀 4. 部署到 Sealos 集群
 
-### 5.1 编写 Kubernetes 部署文件
+### 4.1 编写 Kubernetes 部署文件
 
 在本地新建 `py-infer.yaml`：
 
@@ -177,7 +125,7 @@ spec:
   type: ClusterIP
 ```
 
-### 5.2 应用配置
+### 4.2 应用配置
 
 ```bash
 kubectl apply -f py-infer.yaml
@@ -192,7 +140,7 @@ kubectl -n ns-xxxxxxx get svc
 
 ---
 
-## 🔗 6. 前端访问服务
+## 🔗 5. 前端访问服务
 
 1. 本地端口转发：
 
